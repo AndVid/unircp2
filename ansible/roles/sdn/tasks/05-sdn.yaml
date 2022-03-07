@@ -1,0 +1,13 @@
+---
+# full list of commands available here: https://github.com/jadebustos/devopslabs/blob/master/labs-k8s/00-02-sdn-azure.md
+# installing sdn on azure
+ 
+- name: open port 8285/udp
+  command: firewall-cmd --permanent --add-port=8285/udp
+- name: open port 8472/udp
+  command: firewall-cmd --permanent --add-port=8472/udp
+- name: reboot firewall
+  command: firewall-cmd --reload
+- name: download file from projectcalico.org
+  command: kubectl apply -f https://docs.projectcalico.org/manifests/canal.yaml
+ 

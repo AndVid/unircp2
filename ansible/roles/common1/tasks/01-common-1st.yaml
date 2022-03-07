@@ -1,0 +1,65 @@
+---
+# full list of commands available here: https://github.com/jadebustos/devopslabs/blob/master/labs-k8s/00-00-instalando-kubernetes.md
+# module: argument
+# common configurations to both machines - first part
+- name: set timezone to Europe/Madrid
+  timezone: Europe/Madrid
+- name: Install chrony
+  package:
+    name: chrony
+    state: latest
+- name: Enable chrony
+  command: /usr/bin/systemctl enable chronyd
+- name: start chrony
+  command: /usr/bin/systemctl start chronyd
+- name: Set ntp 
+  command: /usr/bin/timedatectl set-ntp true
+- name: Disable SELinux
+  selinux:
+  state: disabled
+- name: Install requiered packages
+  dnf:
+   name: nfs-utils
+   state: latest
+   update_cache: yes
+   name: net-tools
+   state: latest
+   update_cache: yes
+   name: nfs4-acl-tools
+   state: latest
+   update_cache: yes
+   name: wget
+   state: latest
+   update_cache: yes
+- name: Disable SWAP 
+  shell: |
+    swapoff -a
+- name: Disable SWAP in fstab 
+  lineinfile:
+    path: /etc/fstab
+    regexp: 'swap'
+    state: absent
+- name: adding cri-o repository
+  git:
+    repo: https://github.com/kubernetes-incubator/cri-o
+    dest: /root/src/github.com/kubernetes-incubator/cri-o
+- name: build cri-o
+  shell: |
+    cd /root/src/github.com/kubernetes-incubator/cri-o && \
+    make install.tools && \
+    make && \
+    make install && \
+    make install.systemd && \
+    make install.config
+- name: start cri-o
+  service:
+    name: cri-o
+    state: started
+    enabled: yes
+- name: Enable firewall service 
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+- name: reboot ALL machines
+  reboot:

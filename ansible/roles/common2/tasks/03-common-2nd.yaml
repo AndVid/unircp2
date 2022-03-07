@@ -1,0 +1,37 @@
+---
+# full list of commands available here: https://github.com/jadebustos/devopslabs/blob/master/labs-k8s/00-00-instalando-kubernetes.md
+# common configurations to both machines - second part
+- name: set modprobe
+  command: modprobe br_netfilter
+- name: set transparent masquerading
+  firewalld: 
+    masquerade: yes 
+    permanent: true 
+    state: enabled
+- name: reboot firewall
+  command: firewall-cmd --reload
+- name: allow traffic management
+  blockinfile:
+    path: "/etc/sysctl.d/k8s.conf"
+    block: |
+      net.bridge.bridge-nf-call-ip6tables = 1
+      net.bridge.bridge-nf-call-iptables = 1
+- name: applying changes
+  command: sysctl --system
+- name: add Kubernetes YUM repository
+  yum_repository:
+  name: Kubernetes
+  description: Kubernetes YUM repository
+  baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+  gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+  gpgcheck: yes
+  enabled: yes
+- name: install kubeadm, kubectl and kubelet
+  command: 
+    cmd: dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+    warn: no
+- name: Initiating and enabling kubelet service permanently  
+  service:
+    name: "kubelet"
+    state: started
+    enabled: yes

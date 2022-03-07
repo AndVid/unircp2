@@ -1,0 +1,25 @@
+---
+c
+# installing nfs on master
+- name: start the service 
+  shell: systemctl enable nfs-server;systemctl start nfs-server
+- name: creating directory /srv/nfs
+  file: path=/srv/nfs state=directory mode=777 owner=root group=root
+- name: copying to /etc/exports
+  template: src=exports.j2 dest=/etc/exports owner=root group=root
+- name: apply the new configuration exportfs -r
+  command: exportfs -r
+- name: apply the new configuration exportfs -s
+  command: exportfs -s
+- name: make services accessible
+  firewalld:
+    service: "{{ item }}"
+    permanent: yes
+    state: enabled
+    immediate: yes
+    loop:
+    - nfs
+    - rpc-bind
+    - mountd
+- name: reboot firewall
+  command: firewall-cmd --reload

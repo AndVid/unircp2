@@ -1,0 +1,15 @@
+---
+# full list of commands available here: https://github.com/jadebustos/devopslabs/blob/master/labs-k8s/00-00-instalando-kubernetes.md
+# configuring worker
+
+- name: opening required ports
+  command: firewall-cmd --zone=public --permanent --add-port={10250,30000-32767}/tcp
+- name: reboot firewall
+  command: firewall-cmd --reload
+- name: coping join command 
+  copy:
+    src: /tmp/kubernetes_join_command
+    dest: /tmp/kubernetes_join_command
+    mode: 0777
+- name: join worker to the cluster
+  command: sh /tmp/kubernetes_join_command

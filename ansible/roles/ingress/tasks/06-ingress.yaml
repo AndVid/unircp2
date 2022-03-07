@@ -1,0 +1,11 @@
+---
+# full list of commands available here: https://github.com/jadebustos/devopslabs/blob/master/labs-k8s/00-00-instalando-kubernetes.md
+# deploy ingress controller on master
+ 
+- name: double check installation
+  shell: "kubectl get ns haproxy-controller -o json | jq .status.phase -r"
+  register: ingress_check
+- name: running installation
+  command: kubectl apply -f https://raw.githubusercontent.com/haproxytech/kubernetes-ingress/v1.5/deploy/haproxy-ingress.yaml
+  when: ingress_check.stdout != "Active"
+    

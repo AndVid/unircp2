@@ -1,0 +1,46 @@
+---
+# ansible-playbook -i hosts main_playbook.yaml
+
+- name: common configurations to both machines - first part - 01
+  hosts: all
+  become: true
+  roles:
+    - common1
+
+- name: install NFS on master - 02
+  hosts: master
+  become: true
+  roles:
+    - nfs
+
+- name: common configurations to both machines - second part - 03
+  hosts: all
+  become: true
+  roles:
+    - common2
+
+- name: configuring kubernetes on master - 04
+  hosts: master
+  become: true
+  roles:
+    - master
+
+- name: configuring sdn azure - 05
+  hosts: master
+  become: true
+  roles:
+    - sdn
+
+- name: installing ingress controller - 06
+  hosts: master
+  become: true
+  roles:
+    - ingress
+
+- name: configuring kubernetes on worker - 07
+  hosts: worker
+  become: true
+  roles:
+    - worker
+
+
