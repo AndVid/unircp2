@@ -2,11 +2,13 @@
 # full list of commands available here: https://github.com/jadebustos/devopslabs/blob/master/labs-k8s/00-00-instalando-kubernetes.md
 # common configurations to both machines - second part
 - name: set modprobe
-  command: modprobe br_netfilter
+  modprobe: br_netfilter
+  state: present
 - name: set transparent masquerading
   firewalld: 
     masquerade: yes 
     permanent: true 
+    zone: public
     state: enabled
 - name: reboot firewall
   command: firewall-cmd --reload
@@ -25,6 +27,7 @@
   baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
   gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
   gpgcheck: yes
+  exclude: kubelet kubeadm kubectl
   enabled: yes
 - name: install kubeadm, kubectl and kubelet
   command: 

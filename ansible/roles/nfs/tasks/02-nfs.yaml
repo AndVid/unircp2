@@ -1,5 +1,5 @@
 ---
-c
+
 # installing nfs on master
 - name: start the service 
   shell: systemctl enable nfs-server;systemctl start nfs-server

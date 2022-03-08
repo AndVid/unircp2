@@ -1,6 +1,5 @@
 [all:vars]
-ansible_user=ansible
-#ansible_user=adminUsername 
+ansible_user=adminUsername 
 
 [master]
 13.93.29.135 

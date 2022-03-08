@@ -32,8 +32,7 @@
    state: latest
    update_cache: yes
 - name: Disable SWAP 
-  shell: |
-    swapoff -a
+  shell: swapoff -a
 - name: Disable SWAP in fstab 
   lineinfile:
     path: /etc/fstab
