@@ -38,7 +38,7 @@
   dnf:
    name: wget
    state: latest
-
+   
 - name: Disable SWAP 
   shell: swapoff -a
 - name: Disable SWAP in fstab 

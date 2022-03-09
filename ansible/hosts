@@ -4,7 +4,7 @@ ansible_user=adminUsername
 [master]
 40.113.114.186
 
-[workers]
+[worker]
 40.113.105.188
 
 [nfs]
