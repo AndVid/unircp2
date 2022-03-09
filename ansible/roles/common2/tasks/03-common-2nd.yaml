@@ -1,9 +1,11 @@
 ---
 # full list of commands available here: https://github.com/jadebustos/devopslabs/blob/master/labs-k8s/00-00-instalando-kubernetes.md
 # common configurations to both machines - second part
-- name: set modprobe
-  modprobe: br_netfilter
-  state: present
+- name: modprobe
+  modprobe:
+    name: br_netfilter
+    state: present
+  become: yes
 - name: set transparent masquerading
   firewalld: 
     masquerade: yes 

@@ -2,8 +2,13 @@
 # full list of commands available here: https://github.com/jadebustos/devopslabs/blob/master/labs-k8s/00-00-instalando-kubernetes.md
 # module: argument
 # common configurations to both machines - first part
+- name: Update
+  dnf:
+    name: "*"
+    state: latest
 - name: set timezone to Europe/Madrid
-  timezone: Europe/Madrid
+  timezone: 
+   name: Europe/Madrid
 - name: Install chrony
   package:
     name: chrony
@@ -16,21 +21,24 @@
   command: /usr/bin/timedatectl set-ntp true
 - name: Disable SELinux
   selinux:
-  state: disabled
-- name: Install requiered packages
+   state: disabled
+- name: Install nfs-utils
   dnf:
    name: nfs-utils
    state: latest
-   update_cache: yes
+- name: Install net-tools
+  dnf:
    name: net-tools
    state: latest
-   update_cache: yes
+- name: Install nfs4-acl-tools
+  dnf:
    name: nfs4-acl-tools
    state: latest
-   update_cache: yes
+- name: Install wget
+  dnf:
    name: wget
    state: latest
-   update_cache: yes
+
 - name: Disable SWAP 
   shell: swapoff -a
 - name: Disable SWAP in fstab 
@@ -38,23 +46,55 @@
     path: /etc/fstab
     regexp: 'swap'
     state: absent
-- name: adding cri-o repository
-  git:
-    repo: https://github.com/kubernetes-incubator/cri-o
-    dest: /root/src/github.com/kubernetes-incubator/cri-o
-- name: build cri-o
-  shell: |
-    cd /root/src/github.com/kubernetes-incubator/cri-o && \
-    make install.tools && \
-    make && \
-    make install && \
-    make install.systemd && \
-    make install.config
-- name: start cri-o
-  service:
-    name: cri-o
+- name: adding docker repository
+  shell: dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+  args:
+    creates: /etc/yum.repos.d/docker-ce.repo
+    warn: false
+- name: docker-ce package installation
+  dnf:
+    name: docker-ce
+    state: present
+- name: docker-ce-cli package installation
+  dnf:
+    name: docker-ce-cli
+    state: present
+- name: containerd.io package installation
+  dnf:
+    name: containerd.io
+    state: present
+- name: start docker service
+  systemd:
+    name: docker
     state: started
     enabled: yes
+    masked: no
+- name: copying daemon.json 
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+    mode: '0644'
+- name: restart service
+  systemd:
+    name: docker
+    state: restarted
+#- name: adding cri-o repository
+#  git:
+#    repo: https://github.com/kubernetes-incubator/cri-o
+#    dest: /root/src/github.com/kubernetes-incubator/cri-o
+#- name: build cri-o
+#  shell: |
+#    cd /root/src/github.com/kubernetes-incubator/cri-o && \
+#    make install.tools && \
+#    make && \
+#    make install && \
+#    make install.systemd && \
+#    make install.config
+#- name: start cri-o
+#  service:
+#    name: cri-o
+#    state: started
+#    enabled: yes
 - name: Enable firewall service 
   service:
     name: firewalld

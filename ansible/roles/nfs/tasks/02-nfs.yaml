@@ -1,12 +1,20 @@
 ---
 
 # installing nfs on master
-- name: start the service 
-  shell: systemctl enable nfs-server;systemctl start nfs-server
 - name: creating directory /srv/nfs
-  file: path=/srv/nfs state=directory mode=777 owner=root group=root
+  file: 
+   path: /srv/nfs 
+   state: directory 
 - name: copying to /etc/exports
-  template: src=exports.j2 dest=/etc/exports owner=root group=root
+  template: 
+   src: exports.j2 
+   dest: /etc/exports 
+- name: start service
+  systemd:
+    name: nfs-server
+    state: started
+    enabled: yes
+    masked: no
 - name: apply the new configuration exportfs -r
   command: exportfs -r
 - name: apply the new configuration exportfs -s
