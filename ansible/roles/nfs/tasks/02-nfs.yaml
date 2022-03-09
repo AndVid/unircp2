@@ -6,8 +6,8 @@
    path: /srv/nfs 
    state: directory 
 - name: copying to /etc/exports
-  template: 
-   src: exports.j2 
+  copy: 
+   src: exports
    dest: /etc/exports 
 - name: start service
   systemd:
