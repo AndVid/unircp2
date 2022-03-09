@@ -1,2 +1,28 @@
 terraform/credentials.tf
- 
+
+# VISUAL STUDIO CODE
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.history/
+*.vsix
+*.coverage
+*.coveragexml
+
+ASALocalRun/
+
+# TERRAFORM
+
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+.terraform.lock.hcl
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
