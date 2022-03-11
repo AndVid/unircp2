@@ -20,46 +20,10 @@
    dest: "/etc/sysctl.d/k8s.conf"
 - name: applying changes
   command: sysctl --system
-#- name: Install cri-o
-#  dnf:
-#   name: cri-o
-#   state: latest
-# - name: add Kubernetes YUM repository
-#   yum_repository:
-#     name: Kubernetes
-#     description: Kubernetes YUM repository
-#     baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
-#     gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-#     gpgcheck: yes
-#     exclude: kubelet kubeadm kubectl
-#     enabled: yes
-# - name: copying file kubernetes.repo
-#   become: yes
-#   copy:
-#     src: kubernetes.repo
-#     dest: /etc/yum.repos.d/kubernetes.repo
-#     owner: root
-#     group: root
-#     mode: 0644
-# # - name: update
-# #   command: dnf update 
-# - name: instalando k8s
-#   command: dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
-# - name: Habilitar e iniciamos el servicio de Kubernetes
-#   systemd:
-#     name: kubelet
-#     state: started
-#     enabled: yes
-#     masked: no
-# - name: Initiating and enabling kubelet service permanently  
-#   service:
-#     name: "kubelet"
-#     state: started
-#     enabled: yes
-- name: Configuramos el repositorio de Kubernetes
+- name: kubernetes YUM repository
   yum_repository:
     name: Kubernetes
-    description: Repositorio oficial de Kubernetes
+    description: official repository
     baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
     enabled: yes
     gpgcheck: yes
@@ -67,8 +31,7 @@
     gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
     exclude: kubelet kubeadm kubectl
   become: yes
-
-- name: Instalamos Kubernetes
+- name: kubernetes instalation
   dnf:
     name: "{{ item }}"
     state: present
@@ -78,8 +41,7 @@
     - kubelet
     - kubeadm 
     - kubectl
-
-- name: Habilitar e iniciamos el servicio de Kubernetes
+- name: Initiating and enabling kubelet service permanently 
   systemd:
     name: kubelet
     state: started

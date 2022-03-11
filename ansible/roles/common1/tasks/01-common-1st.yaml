@@ -46,6 +46,7 @@
     path: /etc/fstab
     regexp: 'swap'
     state: absent
+# I used docker because with cri-o I was not able to make it work
 - name: adding docker repository
   shell: dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
   args:
